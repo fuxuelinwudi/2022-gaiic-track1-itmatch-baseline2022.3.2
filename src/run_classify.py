@@ -65,6 +65,7 @@ def train(args):
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
             if args.use_fgm:
+                model.zero_grad()
                 fgm = FGM(args, model)
                 fgm.attack()
                 adv_loss = model(**batch_cuda)[0]
@@ -72,6 +73,7 @@ def train(args):
                 fgm.restore()
 
             if args.use_pgd:
+                model.zero_grad()
                 pgd = PGD(args, model)
                 pgd.backup_grad()
                 for t in range(args.adv_k):
